@@ -13,12 +13,12 @@ import javax.swing.JOptionPane;
  * Ejemplo: un método para leer por pantalla una cadena de caracteres.
  * 
  * @author Adrián Arjona
- * @version tarea 9 // Mayo 2023
+ * @version tarea 10 // Mayo 2023
  */
 public class Utilidades {
     
     /* Francisco Adrián Arjona Bravo
-        UNIDAD 9: comunicándonos con el usuario. Interfaces.
+        UNIDAD 10: Mantenimiento de la persistencia de los objetos.
     */
     
     // ------------------- ENTRADA DE DATOS -----------------------------

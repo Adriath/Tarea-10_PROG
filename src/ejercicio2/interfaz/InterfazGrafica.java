@@ -21,7 +21,7 @@ import utilidades.Utilidades;
 public class InterfazGrafica extends javax.swing.JFrame {
     
     /* Francisco Adrián Arjona Bravo
-        UNIDAD 9: comunicándonos con el usuario. Interfaces.
+        UNIDAD 10: Mantenimiento de la persistencia de los objetos.
     */
     
 

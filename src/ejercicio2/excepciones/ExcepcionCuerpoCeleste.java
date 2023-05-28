@@ -10,7 +10,7 @@ package ejercicio2.excepciones;
 public class ExcepcionCuerpoCeleste extends Exception{
     
     /* Francisco Adrián Arjona Bravo
-        UNIDAD 9: comunicándonos con el usuario. Interfaces.
+        UNIDAD 10: Mantenimiento de la persistencia de los objetos.
     */
     
    /**

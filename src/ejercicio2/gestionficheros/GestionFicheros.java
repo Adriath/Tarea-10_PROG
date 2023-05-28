@@ -20,7 +20,7 @@ import java.util.List;
 public class GestionFicheros {
     
     /* Francisco Adrián Arjona Bravo
-        UNIDAD 9: comunicándonos con el usuario. Interfaces.
+        UNIDAD 10: Mantenimiento de la persistencia de los objetos.
     */
     
     public static File fichero = new File("sistemasolar.dat") ;

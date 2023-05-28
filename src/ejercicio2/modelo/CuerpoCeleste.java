@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class CuerpoCeleste implements Serializable{
     
     /* Francisco Adrián Arjona Bravo
-        UNIDAD 9: comunicándonos con el usuario. Interfaces.
+        UNIDAD 10: Mantenimiento de la persistencia de los objetos.
     */
     
     // DECLARACIÓN DE VARIABLES
