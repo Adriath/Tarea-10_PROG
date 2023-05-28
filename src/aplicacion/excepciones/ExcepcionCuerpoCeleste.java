@@ -1,5 +1,5 @@
 
-package ejercicio2.excepciones;
+package aplicacion.excepciones;
 
 /**
  * Excepción personalizada para la clase CuerpoCeleste.

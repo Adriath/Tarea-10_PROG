@@ -1,10 +1,9 @@
 
-package ejercicio2.interfaz;
+package aplicacion.interfaz;
 
-import ejercicio2.excepciones.ExcepcionCuerpoCeleste;
-import ejercicio2.gestionficheros.GestionFicheros;
-import ejercicio2.modelo.CuerpoCeleste;
-import java.io.File;
+import aplicacion.excepciones.ExcepcionCuerpoCeleste;
+import aplicacion.gestionficheros.GestionFicheros;
+import aplicacion.modelo.CuerpoCeleste;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -31,11 +30,9 @@ public class InterfazGrafica extends javax.swing.JFrame {
      * Mensaje que se muestra en la visor de mensajes de error.
      */
     private String mensajeError = "" ;
-    
     /**
      * Fichero en el que se van almacenar los datos.
      */
-    private static File fichero = new File("sistemasolar.dat") ;
     
     /**
      * Lista utilizada para gestionar los datos.

@@ -1,7 +1,7 @@
 
-package ejercicio2.modelo;
+package aplicacion.modelo;
 
-import ejercicio2.excepciones.ExcepcionCuerpoCeleste;
+import aplicacion.excepciones.ExcepcionCuerpoCeleste;
 import java.io.Serializable;
 
 /**

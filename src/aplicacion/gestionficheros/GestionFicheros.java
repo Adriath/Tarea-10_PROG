@@ -1,7 +1,7 @@
 
-package ejercicio2.gestionficheros;
+package aplicacion.gestionficheros;
 
-import ejercicio2.modelo.CuerpoCeleste;
+import aplicacion.modelo.CuerpoCeleste;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

@@ -1,8 +1,7 @@
 
-package ejercicio2.interfaz;
+package aplicacion.interfaz;
 
-import ejercicio2.gestionficheros.GestionFicheros;
-import ejercicio2.modelo.CuerpoCeleste;
+import aplicacion.modelo.CuerpoCeleste;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JScrollPane;
