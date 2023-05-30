@@ -1,7 +1,7 @@
 
 package aplicacion.interfaz;
 
-import aplicacion.excepciones.ExcepcionCuerpoCeleste;
+import aplicacion.gestionBD.ConexionOracle;
 import aplicacion.gestionBD.GestionFicheros;
 import aplicacion.modelo.CuerpoCeleste;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import utilidades.Utilidades;
+import java.sql.* ;
 
 /**
  * Interfaz gráfica para la aplicación de gestión de los cuerpos celestes.
@@ -75,16 +76,15 @@ public class InterfazGrafica extends javax.swing.JFrame {
      */
     public static void aniadirCuerpoCeleste(){
         
+        // ------ DECLARACIÓN DE VARIABLES ------------
+
+        
         short codigoCuerpo ;
         String nombre ;
         String tipoObjeto ;
         int diametro ;
         
         boolean validador ;
-        
-        
-        GestionFicheros.fichero = GestionFicheros.abrir();
-        
         
         // Pedimos el CÓDIGO
         
@@ -151,25 +151,31 @@ public class InterfazGrafica extends javax.swing.JFrame {
             válidos continuamos almacenándolos.
         */
         
-        if (GestionFicheros.cuerposCelestes.isEmpty()) // Si el array está vacío...
-        {
-            GestionFicheros.cuerposCelestes = new ArrayList<CuerpoCeleste>() ; // ... créalo.
-        }
-        
-        try
-        {
-            GestionFicheros.cuerposCelestes.add(new CuerpoCeleste(codigoCuerpo, nombre, tipoObjeto, diametro)) ;
-        }
-        catch(ExcepcionCuerpoCeleste e){
+         try {
             
-            System.out.println(e.getMessage());
+            int pos = 1 ;
+            
+            ConexionOracle conexion = new ConexionOracle() ;
+            
+            Connection conn = conexion.getConn() ;
+            
+            String SQLq = "INSERT INTO CUERPOSCELESTES VALUES (TIPO_CUERPOCELESTE(?,?,?,?))" ;
+            
+            PreparedStatement ps = conn.prepareStatement(SQLq, Statement.RETURN_GENERATED_KEYS) ;
+            
+            ps.setInt(pos, codigoCuerpo) ;
+            ps.setString(++pos, nombre) ;
+            ps.setString(++pos, tipoObjeto) ;
+            ps.setInt(++pos, diametro) ;
+            
+            ps.executeUpdate() ;
+            
+            conexion.desconectar() ;
+        } 
+        catch (Exception e) {
+            System.out.println("No se he añadido el valor a la tabla de la base de datos." + e.getMessage());
         }
-        
-        // Guarda los datos en el fichero
-        
-        GestionFicheros.fichero = GestionFicheros.escribirArchivo() ;
-        
-//        System.out.println("\nCuerpo Celeste " + cuerposCelestes.size()+ " añadido");
+         
     }
     
     

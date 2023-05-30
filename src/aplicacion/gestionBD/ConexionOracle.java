@@ -22,8 +22,12 @@ public class ConexionOracle {
     public ConexionOracle() {
         conectar() ;
     }
+
+    public Connection getConn() {
+        return conn;
+    }
     
-    private void conectar(){
+    public void conectar(){
         
         try 
         {
@@ -40,7 +44,7 @@ public class ConexionOracle {
         
     }
     
-    private void desconectar(){
+    public void desconectar(){
         try 
         {
             conn.close() ;
@@ -51,9 +55,9 @@ public class ConexionOracle {
         }
     }
     
-    public static void main(String[] args) {
-        
-        ConexionOracle conn = new ConexionOracle();
-        conn.desconectar();
-    }
+//    public static void main(String[] args) { // --------------------- MÉTODO MAIN DE PRUEBAS ------------------------
+//        
+//        ConexionOracle conn = new ConexionOracle();
+//        conn.desconectar();
+//    }
 }
