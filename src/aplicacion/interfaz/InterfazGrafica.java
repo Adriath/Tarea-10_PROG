@@ -2,7 +2,7 @@
 package aplicacion.interfaz;
 
 import aplicacion.excepciones.ExcepcionCuerpoCeleste;
-import aplicacion.gestionficheros.GestionFicheros;
+import aplicacion.gestionBD.GestionFicheros;
 import aplicacion.modelo.CuerpoCeleste;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;

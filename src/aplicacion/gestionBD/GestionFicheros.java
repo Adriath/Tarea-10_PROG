@@ -1,5 +1,5 @@
 
-package aplicacion.gestionficheros;
+package aplicacion.gestionBD;
 
 import aplicacion.modelo.CuerpoCeleste;
 import java.io.File;
