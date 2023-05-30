@@ -478,41 +478,44 @@ public class InterfazGrafica extends javax.swing.JFrame {
     /**
      * Método que nos elimina el fichero de datos del disco.
      */
-    public static void eliminarFichero(){
+    public static void vaciarBD(){
         
         int respuesta ;
         boolean borrado ;
         
-        if (GestionFicheros.fichero.exists())
-            // Si el fichero existe
+      
+        try
         {
-            try
+            ConexionOracle conexion = new ConexionOracle() ;
+            
+            Connection conn = conexion.getConn() ;
+            
+            Statement leer = conn.createStatement() ;
+            
+            String consulta = "DELETE FROM CUERPOSCELESTES" ;
+            
+            // Mensaje de confirmación para borrar el fichero
+
+            respuesta = JOptionPane.showConfirmDialog(null, "¿Deseas vaciar la base de datos?", "Confirmación", JOptionPane.YES_NO_OPTION) ;
+
+            if (respuesta == JOptionPane.YES_OPTION)
+                //Si la respuesta es sí...
             {
-                // Mensaje de confirmación para borrar el fichero
+                leer.executeUpdate(consulta) ; // ... vacía la tabla de la base de datos.
+
+                Utilidades.mostrarMensajeGUI("BASE DE DATOS VACÍA.") ; // Avisa con un mensaje
+                cuerposCelestes.clear(); // Vacía el ArrayList.
                 
-                respuesta = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el fichero completo?", "Confirmación", JOptionPane.YES_NO_OPTION) ;
-
-                if (respuesta == JOptionPane.YES_OPTION)
-                    //Si la respuesta es sí...
-                {
-                    borrado = GestionFicheros.fichero.delete() ; // ... borra el fichero.
-
-                    if (borrado) 
-                        // Si ha sido borrado avisa con un mensaje.
-                    {
-                        Utilidades.mostrarMensajeGUI("FICHERO DE DATOS ELMINADO.") ;
-                        GestionFicheros.cuerposCelestes.clear();
-                    }
-                }
-                else
-                    // Si la respuesta es no o no se contesta...
-                {
-                    Utilidades.mostrarMensajeGUI("NO SE HA REALIZADO NINGUNA ACCIÓN."); // ... avisa diciendo que no se hizo nada.
-                }
+                conexion.desconectar() ;
             }
-            catch (Exception e){
-                System.err.println("\nAlgún error ocurrió: " + e.getMessage());
+            else
+                // Si la respuesta es no o no se contesta...
+            {
+                Utilidades.mostrarMensajeGUI("NO SE HA REALIZADO NINGUNA ACCIÓN."); // ... avisa diciendo que no se hizo nada.
             }
+        }
+        catch (Exception e){
+            System.err.println("\nAlgún error ocurrió: " + e.getMessage());
         }
         
     }
@@ -633,7 +636,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
         });
 
         botonEliminarFichero.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        botonEliminarFichero.setText("Eliminar fichero completo");
+        botonEliminarFichero.setText("Vaciar base de datos");
         botonEliminarFichero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botonEliminarFicheroActionPerformed(evt);
@@ -803,12 +806,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
     private void botonEliminarFicheroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEliminarFicheroActionPerformed
         limpiarMensajeError() ;
         
-        if (!(GestionFicheros.fichero.exists())) 
-        {
-            consolaMensajes.setText("EL FICHERO NO EXISTE.") ;
-        }
-        
-        eliminarFichero() ;
+        vaciarBD() ;
     }//GEN-LAST:event_botonEliminarFicheroActionPerformed
 
     private void botonBuscarPorTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBuscarPorTipoActionPerformed
