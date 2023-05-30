@@ -170,10 +170,12 @@ public class InterfazGrafica extends javax.swing.JFrame {
             
             ps.executeUpdate() ;
             
+            Utilidades.mostrarMensajeGUI("Cuerpo Celeste " + codigoCuerpo + " añadido") ;
+            
             conexion.desconectar() ;
         } 
         catch (Exception e) {
-            System.out.println("No se he añadido el valor a la tabla de la base de datos." + e.getMessage());
+            Utilidades.mostrarMensajeGUI("No se he añadido el valor a la tabla de la base de datos.\n" + e.getMessage()) ;
         }
          
     }
@@ -189,13 +191,41 @@ public class InterfazGrafica extends javax.swing.JFrame {
      */
     public static DefaultTableModel listarCuerpoCeleste(){
         
-        GestionFicheros.fichero = GestionFicheros.abrir();
+        try
+        {
+            short codigoCuerpo = 0 ;
+            String nombre = "";
+            String tipoObjeto = "" ;
+            int diametro = 0;
+            
+            ConexionOracle conexion = new ConexionOracle() ;
+            
+            Connection conn = conexion.getConn() ;
+            
+            Statement leer = conn.createStatement() ;
+            ResultSet rs = leer.executeQuery("SELECT * FROM CUERPOSCELESTES") ;
+            
+            while (rs.next())
+            {
+                codigoCuerpo = rs.getShort("CODIGO") ;
+                nombre = rs.getString("NOMBRE") ;
+                tipoObjeto = rs.getString("TIPO") ;
+                diametro = rs.getInt("DIAMETRO") ;
+                
+                cuerposCelestes.add(new CuerpoCeleste(codigoCuerpo, nombre, tipoObjeto, diametro)) ;
+            }
+             
+            conexion.desconectar() ;
+        }
+        catch(Exception e){
+            System.out.println("ERROR EN LISTAR CUERPOS.\n" + e.getMessage());
+        }
 
-        if (GestionFicheros.cuerposCelestes != null) 
+        if (cuerposCelestes != null) 
         {
             int contador = 1 ;
 
-            for (CuerpoCeleste objeto: GestionFicheros.cuerposCelestes) 
+            for (CuerpoCeleste objeto: cuerposCelestes) 
             {
                 System.out.println("Registro nº " + contador + " - "  + objeto.toString());
                 contador++ ;
@@ -211,11 +241,11 @@ public class InterfazGrafica extends javax.swing.JFrame {
         
           // Creación de los datos de la tabla en un array bidimensional
           
-        Object[][] data = new Object[GestionFicheros.cuerposCelestes.size()][5] ;
+        Object[][] data = new Object[cuerposCelestes.size()][5] ;
         
-        for (int i = 0; i < GestionFicheros.cuerposCelestes.size(); i++) {
+        for (int i = 0; i < cuerposCelestes.size(); i++) {
             
-            CuerpoCeleste cuerpoCeleste = GestionFicheros.cuerposCelestes.get(i);
+            CuerpoCeleste cuerpoCeleste = cuerposCelestes.get(i);
             data[i][0] = i + 1 ;
             data[i][1] = cuerpoCeleste.getCodigoCuerpo() ;
             data[i][2] = cuerpoCeleste.getNombre() ;
@@ -690,26 +720,17 @@ public class InterfazGrafica extends javax.swing.JFrame {
         limpiarMensajeError() ;
         aniadirCuerpoCeleste() ;
         
-        Utilidades.mostrarMensajeGUI("Cuerpo Celeste " + GestionFicheros.cuerposCelestes.size()+ " añadido") ;
-        
     }//GEN-LAST:event_botonAniadirRegistroActionPerformed
 
     private void botonListarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonListarRegistroActionPerformed
         limpiarMensajeError() ;
+               
+        marcoPrincipal.setVisible(false); ;
+        setVisible(false);
+
+        VentanaSecundaria nuevaVentana = new VentanaSecundaria(cuerposCelestes, listarCuerpoCeleste()) ;
+        nuevaVentana.setVisible(true) ;
         
-        if (!GestionFicheros.fichero.exists()) 
-        {
-            consolaMensajes.setText("No se puede listar, el fichero no existe.");
-        }
-        else
-        {
-            GestionFicheros.abrir() ;
-            marcoPrincipal.setVisible(false); ;
-            setVisible(false);
-            
-            VentanaSecundaria nuevaVentana = new VentanaSecundaria(GestionFicheros.cuerposCelestes, listarCuerpoCeleste()) ;
-            nuevaVentana.setVisible(true) ;
-        }
     }//GEN-LAST:event_botonListarRegistroActionPerformed
 
     private void botonBuscarPorCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBuscarPorCodigoActionPerformed

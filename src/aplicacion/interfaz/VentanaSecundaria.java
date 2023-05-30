@@ -2,7 +2,6 @@
 package aplicacion.interfaz;
 
 import aplicacion.modelo.CuerpoCeleste;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -24,8 +23,6 @@ public class VentanaSecundaria extends javax.swing.JFrame {
     
     // ------------ DECLARACIÓN DE VARIABLES -----------------
 
-    private static List<CuerpoCeleste> cuerposCelestes = new ArrayList<>() ;
-    
     private DefaultTableModel modeloTabla ;
     
     
@@ -47,8 +44,8 @@ public class VentanaSecundaria extends javax.swing.JFrame {
         
          // Creación de los datos de la tabla en un array bidimensional
         Object[][] data = new Object[cuerposCelestes.size()][5];
-        for (int i = 0; i < cuerposCelestes.size(); i++) {
-            CuerpoCeleste cuerpoCeleste = cuerposCelestes.get(i);
+        for (int i = 0; i < InterfazGrafica.cuerposCelestes.size(); i++) {
+            CuerpoCeleste cuerpoCeleste = InterfazGrafica.cuerposCelestes.get(i);
             data[i][0] = i + 1 ;
             data[i][1] = cuerpoCeleste.getCodigoCuerpo() ;
             data[i][2] = cuerpoCeleste.getNombre();
@@ -223,7 +220,7 @@ public class VentanaSecundaria extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new VentanaSecundaria(cuerposCelestes).setVisible(true);
+                new VentanaSecundaria(InterfazGrafica.cuerposCelestes).setVisible(true);
             }
         });
     }
