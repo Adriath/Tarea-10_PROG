@@ -126,7 +126,22 @@ public class InterfazGrafica extends javax.swing.JFrame {
         
         // Pedimos el TIPO DE OBJETO
         
-        tipoObjeto = Utilidades.leerCadenaGUI("Introduce el tipo de cuerpo celeste:") ;
+        do 
+        {
+            tipoObjeto = Utilidades.leerCadenaGUI("Introduce el tipo de cuerpo celeste:") ;
+
+            validador = compruebaTipo(tipoObjeto) ;
+            
+            if (!validador) 
+            {
+                JOptionPane.showInputDialog(null, "El máximo es 20 caracteres. Inténtalo de nuevo: ") ;
+            }
+            
+        } while (!validador);
+        
+        validador = false ;
+        
+        
 //        tipoObjeto = Utilidades.leerStringBuffer("\nIntroduce el tipo de cuerpo celeste:") ;
 
 
@@ -659,6 +674,23 @@ public class InterfazGrafica extends javax.swing.JFrame {
         return valido ;
     }
     
+    /**
+     * Método que comprueba si el tipo de cuerpo celeste tiene como máximo 20 
+     * caracteres para que no cree conflicto con la base de datos.
+     * 
+     * @param nombre Nombre del cuerpo celeste.
+     * @return Devuelve true si es válido, false si no.
+     */
+    public static boolean compruebaTipo(String tipo){
+        
+        boolean valido = false ;
+        
+        if (tipo.length() <= 20)
+            valido = true ;
+        
+        return valido ;
+    }
+    
     
     /**
      * Método que comprueba si el diámetro tiene 6 dígitos como máximo.
@@ -674,6 +706,58 @@ public class InterfazGrafica extends javax.swing.JFrame {
             valido = true ;
         
         return valido ;
+    }
+    
+    
+    
+    /**
+     * Método privado que comprueba si la base de datos de cuerpos celestes 
+     * está vacía.
+     * 
+     * @return Devuelve true si está vacía y false si no.
+     */
+    private static boolean compruebaSiBaseDatosEstaVacia(){
+        
+        boolean vacia = false ;
+        
+         try
+        {
+            short codigoCuerpo = 0 ;
+            String nombre = "";
+            String tipoObjeto = "" ;
+            int diametro = 0;
+            
+            ConexionOracle conexion = new ConexionOracle() ;
+            
+            Connection conn = conexion.getConn() ;
+            
+            Statement leer = conn.createStatement() ;
+            ResultSet rs = leer.executeQuery("SELECT * FROM CUERPOSCELESTES") ;
+            
+            while (rs.next())
+            {
+                codigoCuerpo = rs.getShort("CODIGO") ;
+                nombre = rs.getString("NOMBRE") ;
+                tipoObjeto = rs.getString("TIPO") ;
+                diametro = rs.getInt("DIAMETRO") ;
+                
+                cuerposCelestes.add(new CuerpoCeleste(codigoCuerpo, nombre, tipoObjeto, diametro)) ;
+            }
+             
+            conexion.desconectar() ;
+        }
+        catch(Exception e){
+            System.out.println("ERROR EN LISTAR CUERPOS.\n" + e.getMessage());
+        }
+         
+        if (cuerposCelestes.isEmpty()) 
+        {
+            vacia = true ;
+        }
+        
+        cuerposCelestes.clear() ;
+        
+        return vacia ;
     }
     
     
@@ -830,27 +914,44 @@ public class InterfazGrafica extends javax.swing.JFrame {
 
     private void botonListarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonListarRegistroActionPerformed
         limpiarMensajeError() ;
-               
-        marcoPrincipal.setVisible(false); ;
-        setVisible(false);
+        
+        if (compruebaSiBaseDatosEstaVacia()) 
+        {
+            consolaMensajes.setText("No se puede listar, la base de datos está vacía.") ;
+        }
+        else
+        {
+            marcoPrincipal.setVisible(false); ;
+            setVisible(false);
 
-        VentanaSecundaria nuevaVentana = new VentanaSecundaria(cuerposCelestes, listarCuerpoCeleste()) ;
-        nuevaVentana.setVisible(true) ;
+            VentanaSecundaria nuevaVentana = new VentanaSecundaria(cuerposCelestes, listarCuerpoCeleste()) ;
+
+            nuevaVentana.setVisible(true) ;
+        }
         
     }//GEN-LAST:event_botonListarRegistroActionPerformed
 
     private void botonBuscarPorCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBuscarPorCodigoActionPerformed
         limpiarMensajeError();
         
-        DefaultTableModel modeloTabla = new DefaultTableModel() ;
-               
-        marcoPrincipal.setVisible(false) ;
-        setVisible(false) ;
+         if (compruebaSiBaseDatosEstaVacia()) 
+        {
+            consolaMensajes.setText("No se puede buscar, la base de datos está vacía.") ;
+        }
+        else
+        {
+            DefaultTableModel modeloTabla = new DefaultTableModel() ;
 
-        modeloTabla = buscarCuerpoCelestePorCodigo() ;
+            marcoPrincipal.setVisible(false) ;
+            setVisible(false) ;
 
-        VentanaSecundaria nuevaVentana = new VentanaSecundaria(cuerposCelestes, modeloTabla) ;
-        nuevaVentana.setVisible(true) ;
+            modeloTabla = buscarCuerpoCelestePorCodigo() ;
+
+            VentanaSecundaria nuevaVentana = new VentanaSecundaria(cuerposCelestes, modeloTabla) ;
+            nuevaVentana.setVisible(true) ;
+        }
+        
+       
         
     }//GEN-LAST:event_botonBuscarPorCodigoActionPerformed
 
@@ -862,38 +963,54 @@ public class InterfazGrafica extends javax.swing.JFrame {
         
         limpiarMensajeError() ;
         
-        marcoPrincipal.setVisible(false); ;
-        setVisible(false);
+        if (compruebaSiBaseDatosEstaVacia()) 
+        {
+            consolaMensajes.setText("No se puede listar, la base de datos está vacía.") ;
+        }
+        else
+        {
+            marcoPrincipal.setVisible(false); ;
+            setVisible(false);
 
-        VentanaSecundaria nuevaVentana = new VentanaSecundaria(cuerposCelestes, listarCuerpoCeleste()) ;
-        nuevaVentana.setVisible(true) ;
+            VentanaSecundaria nuevaVentana = new VentanaSecundaria(cuerposCelestes, listarCuerpoCeleste()) ;
+            nuevaVentana.setVisible(true) ;
 
-        do{
+            do{
 
-            borrado = eliminarCuerpoCeleste() ;
+                borrado = eliminarCuerpoCeleste() ;
 
-            if (borrado) 
-            {
-                nuevaVentana.dispose() ;
-                botonListarRegistroActionPerformed(evt) ;
-            }
+                if (borrado) 
+                {
+                    nuevaVentana.dispose() ;
+                    botonListarRegistroActionPerformed(evt) ;
+                }
 
-            respuesta = JOptionPane.showConfirmDialog(null, "Quieres eliminar otro registro?", "Confirmación", JOptionPane.YES_NO_OPTION) ;
-            nuevaVentana.limpiarConsolaMensajes() ;
+                respuesta = JOptionPane.showConfirmDialog(null, "Quieres eliminar otro registro?", "Confirmación", JOptionPane.YES_NO_OPTION) ;
+                nuevaVentana.limpiarConsolaMensajes() ;
 
-            if (respuesta == JOptionPane.NO_OPTION) 
-            {
-                validador = true ;
-            }
+                if (respuesta == JOptionPane.NO_OPTION) 
+                {
+                    validador = true ;
+                }
 
-        } while (!validador) ;
+            } while (!validador) ;
+        }
             
     }//GEN-LAST:event_botonEliminarRegistroActionPerformed
 
     private void botonEliminarFicheroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEliminarFicheroActionPerformed
         limpiarMensajeError() ;
         
-        vaciarBD() ;
+         if (compruebaSiBaseDatosEstaVacia()) 
+        {
+            consolaMensajes.setText("LA BASE DE DATOS YA ESTÁ VACÍA.") ;
+        }
+        else
+        {
+           vaciarBD() ;
+        }
+        
+        
     }//GEN-LAST:event_botonEliminarFicheroActionPerformed
 
     private void botonBuscarPorTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBuscarPorTipoActionPerformed
@@ -901,14 +1018,20 @@ public class InterfazGrafica extends javax.swing.JFrame {
         
         DefaultTableModel modeloTabla = new DefaultTableModel() ;
         
-       
-        marcoPrincipal.setVisible(false) ;
-        setVisible(false) ;
+        if (compruebaSiBaseDatosEstaVacia()) 
+        {
+            consolaMensajes.setText("No se puede listar, la base de datos está vacía.") ;
+        }
+        else
+        {
+            marcoPrincipal.setVisible(false) ;
+            setVisible(false) ;
 
-        modeloTabla = buscarCuerpoCelestePorTipo() ;
+            modeloTabla = buscarCuerpoCelestePorTipo() ;
 
-        VentanaSecundaria nuevaVentana = new VentanaSecundaria(cuerposCelestes, modeloTabla) ;
-        nuevaVentana.setVisible(true) ;
+            VentanaSecundaria nuevaVentana = new VentanaSecundaria(cuerposCelestes, modeloTabla) ;
+            nuevaVentana.setVisible(true) ;
+        }
         
     }//GEN-LAST:event_botonBuscarPorTipoActionPerformed
 
