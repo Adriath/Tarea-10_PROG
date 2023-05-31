@@ -188,6 +188,7 @@ public class VentanaSecundaria extends javax.swing.JFrame {
         
         InterfazGrafica ventanaPrincipal = new InterfazGrafica() ;
         ventanaPrincipal.setVisible(true) ;
+        InterfazGrafica.cuerposCelestes.clear() ;
     }//GEN-LAST:event_botonVolverActionPerformed
 
     /**
