@@ -30,9 +30,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
      * Mensaje que se muestra en la visor de mensajes de error.
      */
     private String mensajeError = "" ;
-    /**
-     * Fichero en el que se van almacenar los datos.
-     */
+  
     
     /**
      * Lista utilizada para gestionar los datos.
@@ -71,7 +69,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
      // ------------- MÉTODOS DE CUERPO CELESTE ---------------------
     
     /**
-     * Método privado que añade cuerpos celestes.
+     * Método que añade cuerpos celestes.
      */
     public static void aniadirCuerpoCeleste(){
         
@@ -89,9 +87,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
         
         do 
         {
-            
             codigoCuerpo = Utilidades.leerShortGUI("Introduce el código (3 dígitos): ") ;
-//            codigoCuerpo = Utilidades.leerShortBuffer("\nIntroduce el código del cuerpo celeste (3 dígitos max.):") ;
             validador = compruebaCodigo(codigoCuerpo) ;
             
             if (!validador) 
@@ -110,7 +106,6 @@ public class InterfazGrafica extends javax.swing.JFrame {
         do 
         {
             nombre = Utilidades.leerCadenaGUI("Introduce en el nombre del cuerpo celeste (15 caracteres max.):") ;
-//            nombre = Utilidades.leerStringBuffer("\nIntroduce en el nombre del cuerpo celeste (15 caracteres max.):") ;
             validador = compruebaNombre(nombre) ;
             
             if (!validador) 
@@ -129,7 +124,6 @@ public class InterfazGrafica extends javax.swing.JFrame {
         do 
         {
             tipoObjeto = Utilidades.leerCadenaGUI("Introduce el tipo de cuerpo celeste:") ;
-
             validador = compruebaTipo(tipoObjeto) ;
             
             if (!validador) 
@@ -142,10 +136,6 @@ public class InterfazGrafica extends javax.swing.JFrame {
         validador = false ;
         
         
-//        tipoObjeto = Utilidades.leerStringBuffer("\nIntroduce el tipo de cuerpo celeste:") ;
-
-
-
         // Pedimos el DIÁMETRO
 
         do
@@ -160,22 +150,31 @@ public class InterfazGrafica extends javax.swing.JFrame {
             
         } while (!validador);
         
+        
+        
         /*
             Hemos terminado de pedir los datos y han sido comprobados. Si son 
             válidos continuamos almacenándolos.
         */
         
+        
+        // Iniciamos secuencia de conexión con la base de datos.
+        
          try {
             
-            int pos = 1 ;
+            int pos = 1 ; // Posición de la variable en la base de datos.
             
             ConexionOracle conexion = new ConexionOracle() ;
             
             Connection conn = conexion.getConn() ;
             
+            // Creamos la sentencia que va a dar la orden de intertar datos en Oracle.
+            
             String SQLq = "INSERT INTO CUERPOSCELESTES VALUES (TIPO_CUERPOCELESTE(?,?,?,?))" ;
             
             PreparedStatement ps = conn.prepareStatement(SQLq, Statement.RETURN_GENERATED_KEYS) ;
+            
+            // Añadimos los valores de la base de datos hacia el proyecto de Java.
             
             ps.setInt(pos, codigoCuerpo) ;
             ps.setString(++pos, nombre) ;
@@ -221,10 +220,14 @@ public class InterfazGrafica extends javax.swing.JFrame {
             
             while (rs.next())
             {
+                // Extraemos los valores de los atributos en Oracle y los guardamos en el proyecto en Java.
+                
                 codigoCuerpo = rs.getShort("CODIGO") ;
                 nombre = rs.getString("NOMBRE") ;
                 tipoObjeto = rs.getString("TIPO") ;
                 diametro = rs.getInt("DIAMETRO") ;
+                
+                // Almacenamos el registro en el ArrayList.
                 
                 cuerposCelestes.add(new CuerpoCeleste(codigoCuerpo, nombre, tipoObjeto, diametro)) ;
             }
@@ -235,6 +238,12 @@ public class InterfazGrafica extends javax.swing.JFrame {
             System.out.println("ERROR EN LISTAR CUERPOS.\n" + e.getMessage());
         }
 
+        
+        /*
+        Esta secuencia residual la he dejado, solamente muestra datos por 
+        consola pero no tiene efecto en el programa.
+        */
+        
         if (cuerposCelestes != null) 
         {
             int contador = 1 ;
@@ -296,10 +305,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
       
         short codigo = Utilidades.leerShortGUI("Introduce el código del cuerpo celeste que deseas buscar:") ;
         
-//            short codigo = Utilidades.leerShortBuffer("\nIntroduce el código del cuerpo celeste que deseas buscar: ") ;
-
-
-        contador = 1 ;
+        contador = 1 ; // Sirve para mostrar la posición que ocupa un registro en la tabla.
         
         try
         {
@@ -337,7 +343,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
         
         for (CuerpoCeleste cuerpoCeleste: cuerposCelestes) 
         {
-            // Crear los datos de la tabla en un arreglo bidimensional
+            // Creamos los datos de la tabla en un array bidimensional
              
             
             if (cuerpoCeleste.getCodigoCuerpo() == codigo) {
@@ -430,7 +436,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
         for (CuerpoCeleste cuerpoCeleste: cuerposCelestes) 
         {
             
-             // Crear los datos de la tabla en un arreglo bidimensional
+             // Creamos los datos de la tabla en un array bidimensional
             
             CuerpoCeleste cuerCeles = cuerposCelestes.get(i) ;
             
@@ -527,6 +533,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
 
             for(CuerpoCeleste cuerpoCeleste: cuerposCelestes)
             {
+                // Recorremos el array para recuperar el dato extraído, si es que hay algo que extraer.
 
                 if (cuerpoCeleste.getCodigoCuerpo() == codigo)
                     // Si hay coincidencia con el código
@@ -678,7 +685,7 @@ public class InterfazGrafica extends javax.swing.JFrame {
      * Método que comprueba si el tipo de cuerpo celeste tiene como máximo 20 
      * caracteres para que no cree conflicto con la base de datos.
      * 
-     * @param nombre Nombre del cuerpo celeste.
+     * @param tipo Tipo del cuerpo celeste.
      * @return Devuelve true si es válido, false si no.
      */
     public static boolean compruebaTipo(String tipo){

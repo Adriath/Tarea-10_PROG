@@ -32,6 +32,7 @@ public class VentanaSecundaria extends javax.swing.JFrame {
     
     /**
      * Creates new form VentanaSecundaria
+     * @param cuerposCelestes ArrayList de cuerpos celestes.
      */
     public VentanaSecundaria(List<CuerpoCeleste> cuerposCelestes) {
         initComponents();
@@ -77,6 +78,9 @@ public class VentanaSecundaria extends javax.swing.JFrame {
     
       /**
      * Creates new form VentanaSecundaria
+     * 
+     * @param cuerposCelestes ArrayList de cuerpos celestes.
+     * @param modeloTabla Modelo de la tabla.
      */
     public VentanaSecundaria(List<CuerpoCeleste> cuerposCelestes, DefaultTableModel modeloTabla) {
         initComponents();
@@ -103,12 +107,20 @@ public class VentanaSecundaria extends javax.swing.JFrame {
     }
     
     
+    /**
+     * Método que limpia la consola que se sitúa en la parte inferior.
+     */
     public static void limpiarConsolaMensajes(){
         
         consolaMensajes.setText("") ;
     }
     
 
+    /**
+     * Modifica el modelo de la tabla.
+     * 
+     * @param modeloTabla Modelo de la tabla.
+     */
     public void setModeloTabla(DefaultTableModel modeloTabla) {
         this.modeloTabla = modeloTabla;
     }

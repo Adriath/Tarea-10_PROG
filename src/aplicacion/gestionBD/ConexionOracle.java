@@ -16,17 +16,43 @@ public class ConexionOracle {
         UNIDAD 10: Mantenimiento de la persistencia de los objetos.
     */
     
+    // ------------------ DECLARACIÓN DE VARIABLES ---------------
+    
     private Connection conn = null ;
     private String url, user, pass ;
+    
+    
+    // ----------------- MÉTODOS --------------------------
+    
+    // CONSTRUCTOR
 
+    
+    /**
+     * Constructor de la clase ConexionOracle. Inicia la conexión al crear el 
+     * objeto.
+     */
     public ConexionOracle() {
         conectar() ;
     }
 
+    
+    // GETTER
+        
+    /**
+     * Método para obtener el estado de la conexión.
+     * 
+     * @return Estado de la conexión.
+     */
     public Connection getConn() {
         return conn;
     }
     
+    // MÉTODOS PROPIOS
+    
+    
+    /**
+     * Método que conecta con la base de datos de Oracle.
+     */
     public void conectar(){
         
         try 
@@ -44,6 +70,10 @@ public class ConexionOracle {
         
     }
     
+    
+    /**
+     * Método que desconecta de la base de datos de Oracle.
+     */
     public void desconectar(){
         try 
         {
