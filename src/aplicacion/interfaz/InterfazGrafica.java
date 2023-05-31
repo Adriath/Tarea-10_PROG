@@ -2,7 +2,6 @@
 package aplicacion.interfaz;
 
 import aplicacion.gestionBD.ConexionOracle;
-import aplicacion.gestionBD.GestionFicheros;
 import aplicacion.modelo.CuerpoCeleste;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -476,22 +475,50 @@ public class InterfazGrafica extends javax.swing.JFrame {
             
             short codigo = Utilidades.leerShortGUI("Introduce el código del cuerpo celeste que deseas eliminar: ") ;
 
-            GestionFicheros.abrir() ;
-
             contador = 1 ;
 
             encontrado = false ;
+            
+            
+            try
+               {
+                   ConexionOracle conexion = new ConexionOracle() ;
 
-            for(CuerpoCeleste cuerpoCeleste: GestionFicheros.cuerposCelestes)
+                   Connection conn = conexion.getConn() ;
+
+                   Statement leer = conn.createStatement() ;
+
+                   String consulta = "SELECT * FROM CUERPOSCELESTES WHERE CODIGO = '" + codigo + "'" ;
+
+                   ResultSet resultado = leer.executeQuery(consulta) ;
+
+                   if (resultado.next()) 
+                   {
+                       String nombre = resultado.getString("NOMBRE") ;
+                       String tipo = resultado.getString("TIPO") ;
+                       int diametro = resultado.getInt("DIAMETRO") ;
+
+
+                       cuerposCelestes.add(new CuerpoCeleste(codigo, nombre, tipo, diametro)) ;
+                   }
+
+                   conexion.desconectar() ;
+               }
+               catch(Exception e){
+
+                   Utilidades.mostrarMensajeGUI("No se puedo conectar con la base de datos.") ;
+               }
+            
+
+            for(CuerpoCeleste cuerpoCeleste: cuerposCelestes)
             {
-
-                mensaje = "¿Desea eliminar el registro " + contador + "?\n " + GestionFicheros.cuerposCelestes.get(contador - 1).toString() ;
 
                 if (cuerpoCeleste.getCodigoCuerpo() == codigo)
                     // Si hay coincidencia con el código
                 {
                     encontrado = true ;
-//                        System.out.println("\nRegistro nº" + contador + " - " + cuerpoCeleste.toString());
+                    
+                    mensaje = "¿Desea eliminar el registro " + contador + "?\n " + cuerpoCeleste.toString() ;
 
                     // Secuencia de confirmación. Pide confirmación para borrar el registro
                     
@@ -500,13 +527,33 @@ public class InterfazGrafica extends javax.swing.JFrame {
                     if (respuesta == JOptionPane.YES_OPTION)
                         // Si la respuesta es sí lo eliminará
                     {
-                        mensaje = "REGISTRO Nº " + contador + " ELIMINADO" ;
+                        
+                        try
+                        {
+                            ConexionOracle conexion = new ConexionOracle() ;
 
-                        GestionFicheros.cuerposCelestes.remove((contador - 1)) ;
-                        GestionFicheros.escribirArchivo() ;
+                            Connection conn = conexion.getConn() ;
+
+                            Statement leer = conn.createStatement() ;
+
+                            String consulta = "DELETE FROM CUERPOSCELESTES WHERE CODIGO = '" + codigo + "'" ;
+
+                            leer.executeQuery(consulta) ;
+
+                            conexion.desconectar() ;
+                        }
+                        catch(Exception e){
+
+                            Utilidades.mostrarMensajeGUI("No se puedo conectar con la base de datos.") ;
+                        }
+                        
+                        mensaje = "REGISTRO Nº " + codigo + " ELIMINADO" ;
+                        
                         Utilidades.mostrarMensajeGUI(mensaje) ; // Cuadro de diálogo que confirma la elminación
                         
                         borrado = true ;
+                        
+                        cuerposCelestes.clear() ;
                     }
                 }
 
@@ -815,42 +862,32 @@ public class InterfazGrafica extends javax.swing.JFrame {
         
         limpiarMensajeError() ;
         
-        
-        if (!GestionFicheros.fichero.exists()) 
-        {
-            consolaMensajes.setText("No se puede eliminar, el fichero no existe.") ;
-        }
-        else
-        {
+        marcoPrincipal.setVisible(false); ;
+        setVisible(false);
+
+        VentanaSecundaria nuevaVentana = new VentanaSecundaria(cuerposCelestes, listarCuerpoCeleste()) ;
+        nuevaVentana.setVisible(true) ;
+
+        do{
+
+            borrado = eliminarCuerpoCeleste() ;
+
+            if (borrado) 
+            {
+                nuevaVentana.dispose() ;
+                botonListarRegistroActionPerformed(evt) ;
+            }
+
+            respuesta = JOptionPane.showConfirmDialog(null, "Quieres eliminar otro registro?", "Confirmación", JOptionPane.YES_NO_OPTION) ;
+            nuevaVentana.limpiarConsolaMensajes() ;
+
+            if (respuesta == JOptionPane.NO_OPTION) 
+            {
+                validador = true ;
+            }
+
+        } while (!validador) ;
             
-            marcoPrincipal.setVisible(false); ;
-            setVisible(false);
-            
-            VentanaSecundaria nuevaVentana = new VentanaSecundaria(GestionFicheros.cuerposCelestes, listarCuerpoCeleste()) ;
-            nuevaVentana.setVisible(true) ;
-            
-            do{
-            
-                borrado = eliminarCuerpoCeleste() ;
-                
-                if (borrado) 
-                {
-                    nuevaVentana.dispose() ;
-                    botonListarRegistroActionPerformed(evt) ;
-                }
-                 
-                respuesta = JOptionPane.showConfirmDialog(null, "Quieres eliminar otro registro?", "Confirmación", JOptionPane.YES_NO_OPTION) ;
-                nuevaVentana.limpiarConsolaMensajes() ;
-                
-                if (respuesta == JOptionPane.NO_OPTION) 
-                {
-                    validador = true ;
-                }
-            
-            } while (!validador) ;
-        
-           
-        }
     }//GEN-LAST:event_botonEliminarRegistroActionPerformed
 
     private void botonEliminarFicheroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEliminarFicheroActionPerformed
