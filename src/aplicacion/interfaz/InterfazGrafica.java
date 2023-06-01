@@ -188,7 +188,8 @@ public class InterfazGrafica extends javax.swing.JFrame {
             conexion.desconectar() ;
         } 
         catch (Exception e) {
-            Utilidades.mostrarMensajeGUI("No se he añadido el valor a la tabla de la base de datos.\n" + e.getMessage()) ;
+            Utilidades.mostrarMensajeGUI("No se he añadido el valor a la tabla de la base de datos.\n El código " + codigoCuerpo + " ya existe." ) ;
+            System.out.println(e.getMessage()) ;
         }
          
     }
